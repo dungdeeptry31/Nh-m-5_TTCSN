@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Web Dạy Nấu Ăn</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    
+</head>
+<body>
+    <header class="bg-warning text-dark p-3">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h1>Chef's Kitchen</h1>
+            <nav>
+    <a href="index.html" class="text-dark me-3">Trang Chủ</a>
+    <a href="recipe.html" class="text-dark me-3">Công Thức</a>
+    <a href="about.html" class="text-dark me-3">Về Chúng Tôi</a>
+    <a href="contact.html" class="text-dark me-3">Liên Hệ</a>
+    <a href="register.html" class="text-dark me-3">Đăng Ký</a>
+    <a href="login.html" class="text-dark">Đăng Nhập</a>
+</nav>
+        </div>
+    </header>
+    
+    <main class="container my-5">
+        <section class="text-center mb-5">
+            <h2>Chào Mừng Đến Với Chef's Kitchen</h2>
+            <p>Học nấu ăn dễ dàng với các công thức đơn giản và ngon miệng!</p>
+        </section>
+        
+        <section>
+            <h3>Công Thức Nổi Bật</h3>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="/images/salad.webp" class="card-img-top" alt="Salad">
+                        <div class="card-body">
+                            <h5 class="card-title">Salad Rau Củ</h5>
+                            <p class="card-text">Công thức salad tươi ngon, dễ làm.</p>
+                            <a href="recipe.html" class="btn btn-primary">Xem Chi Tiết</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="/images/mỳ ý.jpg" class="card-img-top" alt="Pasta">
+                        <div class="card-body">
+                            <h5 class="card-title">Mì Ý Bolognese</h5>
+                            <p class="card-text">Món mì Ý cổ điển với sốt thịt.</p>
+                            <a href="recipe.html" class="btn btn-primary">Xem Chi Tiết</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="/images/bánh kem chocolate.jpg" class="card-img-top" alt="Cake">
+                        <div class="card-body">
+                            <h5 class="card-title">Bánh Kem Chocolate</h5>
+                            <p class="card-text">Bánh ngọt cho những dịp đặc biệt.</p>
+                            <a href="recipe.html" class="btn btn-primary">Xem Chi Tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="bg-dark text-white text-center p-3">
+        <p>&copy; 2023 Chef's Kitchen. Tất cả quyền được bảo lưu.</p>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+    <!-- Chatbox Icon -->
+<div id="chat-icon" class="chat-icon">
+    <i class="fas fa-comments"></i>
+</div>
+
+<!-- Chatbox Modal -->
+<div id="chat-modal" class="chat-modal">
+    <div class="chat-modal-content">
+        <div class="chat-header">
+            <h5>Hỏi về món ăn</h5>
+            <span id="close-chat" class="close-chat">&times;</span>
+        </div>
+        <div id="chat-messages" class="chat-messages">
+            <div class="bot-message">Chào bạn! Tôi có thể giúp bạn tìm hiểu về món ăn không có trong trang web. Hãy hỏi đi!</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chat-input" placeholder="Nhập câu hỏi của bạn...">
+            <button id="send-chat">Gửi</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>
