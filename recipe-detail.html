@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trang chủ - Web Dạy Nấu Ăn</title>
+    <title>Đang tải món ăn...</title> 
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-</head>
+    </head>
 <body>
 
     <header>
@@ -21,54 +22,43 @@
                 <button>Tìm</button>
             </div>
             <div class="user-actions">
-    
-    <div id="logged-out-actions">
-        <a href="login.html">Đăng nhập</a>
-        <a href="register.html">Đăng ký</a>
-    </div>
-
-    <div id="logged-in-user" class="hidden">
-        <div id="user-profile-button" class="user-profile-button">
-            <span id="username-display">Chào, ...</span>
-            <span>▼</span> </div>
-        
-        <div id="dropdown-menu" class="dropdown-menu hidden">
-            <a href="profile.html">Tài khoản cá nhân</a>
-            <a href="admin-dashboard.html" id="admin-link">Trang Quản trị</a>
-            <div class="dropdown-divider"></div>
-            <a href="#" id="logout-btn-dropdown">Đăng xuất</a>
-        </div>
-    </div>
-    
-</div>
+                </div>
         </nav>
     </header>
 
     <main>
-        
-        <section class="hero">
-            <div class="hero-content">
-                <h1>Khám phá +2.000 công thức</h1>
-                <p>Nấu gì hôm nay? Hãy để chúng tôi giúp bạn!</p>
-                <a href="#recipe-showcase" class="btn btn-primary">Xem món mới nhất</a>
-            </div>
-        </section>
+        <div class="recipe-detail-container">
+            
+            <h1 id="recipe-title"></h1>
 
-        <section class="categories">
-            <h2>Danh mục món ăn</h2>
-            <div id="category-list-container" class="category-grid">
+            <div class="recipe-meta">
+                <span id="recipe-prep-time"></span>
+                <span id="recipe-servings"></span>
+            </div>
+
+            <img id="recipe-image" src="" alt="Hình ảnh món ăn" class="recipe-hero-image">
+
+            <p id="recipe-description" class="recipe-intro"></p>
+
+            <div class="recipe-content">
+                
+                <div class="recipe-ingredients">
+                    <h3>Nguyên liệu</h3>
+                    <ul id="recipe-ingredients-list">
+                        </ul>
                 </div>
-        </section>
-        
-        <section id="recipe-showcase" class="recipe-showcase">
-            <h2>Công thức nổi bật</h2>
-            <div id="recipe-list-container" class="recipe-grid">
+                
+                <div class="recipe-instructions">
+                    <h3>Các bước thực hiện</h3>
+                    <ol id="recipe-instructions-list">
+                        </ol>
                 </div>
-        </section>
-        
+                
+            </div>
+        </div>
     </main>
 
-    <<footer>
+   <footer>
     <div class="footer-container">
         
         <div class="footer-column about">
@@ -118,8 +108,6 @@
         </div>
     </div>
 
-    <script src="js/auth.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/chat.js"></script>
-</body>
+
+    <script src="js/auth.js"></script> <script src="js/chat.js"></script> <script src="js/recipe-detail.js"></script> </body>
 </html>

@@ -1,0 +1,100 @@
+/* File: css/auth.css (PHIÊN BẢN NÂNG CẤP) */
+
+/* :root đã được định nghĩa trong style.css, nhưng để đây để dễ test riêng */
+:root {
+    --primary-color: #4CAF50;
+    --border-radius-md: 8px;
+    --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 1rem; /* Tăng khoảng cách */
+    min-height: 70vh; /* Đẩy form ra giữa */
+}
+
+.auth-form {
+    background: #fff;
+    padding: 2.5rem; /* Tăng padding */
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-medium);
+    width: 100%;
+    max-width: 420px;
+}
+
+.auth-form h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #333;
+    font-weight: 700;
+    font-size: 1.8rem;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius-md);
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hiệu ứng khi focus vào ô input */
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+}
+
+.auth-button {
+    width: 100%;
+    padding: 0.9rem;
+    border: none;
+    border-radius: var(--border-radius-md);
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 0.5rem;
+}
+
+.auth-button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
+
+.auth-button:active {
+    transform: translateY(0);
+}
+
+.auth-switch {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.auth-switch a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-switch a:hover {
+    text-decoration: underline;
+}

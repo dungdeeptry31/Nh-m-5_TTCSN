@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Danh mục</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <a href="index.html">LogoBếp</a>
+            </div>
+            <div class="user-actions">
+                <a href="admin-dashboard.html">Chào, Admin</a>
+                <a href="#" id="logout-btn">Đăng xuất</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="admin-container">
+        <div class="admin-header">
+            <h1>Quản lý Danh mục (UC #14)</h1>
+            <button id="add-new-btn" class="btn btn-primary">Thêm danh mục</button>
+        </div>
+
+        <div id="category-form-container" class="admin-form-container hidden">
+            <h2 id="form-title">Thêm danh mục mới</h2>
+            <form id="category-form">
+                <input type="hidden" id="category-id">
+                
+                <div class="form-group">
+                    <label for="category-name-input">Tên danh mục</label>
+                    <input type="text" id="category-name-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="category-image-input">Link hình ảnh</label>
+                    <input type="text" id="category-image-input">
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Lưu lại</button>
+                    <button type="button" id="cancel-btn" class="btn btn-secondary">Hủy</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="admin-table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Hình ảnh</th>
+                        <th>Tên danh mục</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody id="category-table-body">
+                    </tbody>
+            </table>
+        </div>
+
+    </main>
+
+    <script src="js/auth.js"></script>
+    <script src="js/admin-category.js"></script> </body>
+</html>

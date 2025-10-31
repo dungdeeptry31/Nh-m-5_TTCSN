@@ -3,72 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng Ký - Chef's Kitchen</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Đăng ký - Web Dạy Nấu Ăn</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
 </head>
 <body>
-    <header class="bg-warning text-dark p-3">
-        <div class="container d-flex justify-content-between align-items-center">
-            <h1>Chef's Kitchen</h1>
-            <nav>
-                <a href="index.html" class="text-dark me-3">Trang Chủ</a>
-                <a href="login.html" class="text-dark">Đăng Nhập</a>
-            </nav>
-        </div>
-    </header>
-    
-    <main class="container my-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <h2 class="text-center">Đăng Ký Tài Khoản</h2>
-                <form>
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Họ Tên</label>
-                        <input type="text" class="form-control" id="name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Mật Khẩu</label>
-                        <input type="password" class="form-control" id="password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">Đăng Ký</button>
-                </form>
-                <p class="text-center mt-3">Đã có tài khoản? <a href="login.html">Đăng Nhập</a></p>
+    <header>
+         <nav class="navbar">
+            <div class="logo">
+                <a href="index.html">LogoBếp</a>
             </div>
-        </div>
-    </main>
+        </nav>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     
-    <footer class="bg-dark text-white text-center p-3">
-        <p>&copy; 2023 Chef's Kitchen. Tất cả quyền được bảo lưu.</p>
-    </footer>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="script.js"></script>
-    <!-- Chatbox Icon -->
-<div id="chat-icon" class="chat-icon">
-    <i class="fas fa-comments"></i>
-</div>
+    <link rel="stylesheet" href="css/style.css">
+    </header>
 
-<!-- Chatbox Modal -->
-<div id="chat-modal" class="chat-modal">
-    <div class="chat-modal-content">
-        <div class="chat-header">
-            <h5>Hỏi về món ăn</h5>
-            <span id="close-chat" class="close-chat">&times;</span>
-        </div>
-        <div id="chat-messages" class="chat-messages">
-            <div class="bot-message">Chào bạn! Tôi có thể giúp bạn tìm hiểu về món ăn không có trong trang web. Hãy hỏi đi!</div>
-        </div>
-        <div class="chat-input">
-            <input type="text" id="chat-input" placeholder="Nhập câu hỏi của bạn...">
-            <button id="send-chat">Gửi</button>
-        </div>
-    </div>
-</div>
+    <main class="auth-container">
+        <form id="register-form" class="auth-form">
+            <h2>Đăng ký tài khoản</h2>
+            <div class="form-group">
+                <label for="username">Tên hiển thị</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Mật khẩu</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit" class="auth-button">Đăng ký</button>
+            <p class="auth-switch">
+                Đã có tài khoản? <a href="login.html">Đăng nhập</a>
+            </p>
+        </form>
+    </main>
+
+    <script src="js/auth.js"></script>
 </body>
 </html>

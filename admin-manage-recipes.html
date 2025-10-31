@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Công thức</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <a href="index.html">LogoBếp</a>
+            </div>
+            <div class="user-actions">
+                <a href="admin-dashboard.html">Chào, Admin</a>
+                <a href="#" id="logout-btn">Đăng xuất</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="admin-container">
+        <div class="admin-header">
+            <h1>Quản lý Công thức (UC #13)</h1>
+            <button id="add-new-recipe-btn" class="btn btn-primary">Thêm món mới</button>
+        </div>
+
+        <div id="recipe-form-container" class="admin-form-container hidden">
+            <h2 id="form-title">Thêm công thức mới</h2>
+            <form id="recipe-form">
+                <input type="hidden" id="recipe-id">
+                
+                <div class="form-group">
+                    <label for="recipe-title-input">Tiêu đề món ăn</label>
+                    <input type="text" id="recipe-title-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="recipe-description-input">Mô tả ngắn</label>
+                    <textarea id="recipe-description-input" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="recipe-image-input">Link hình ảnh</label>
+                    <input type="text" id="recipe-image-input">
+                </div>
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label for="recipe-prep-time-input">Thời gian chuẩn bị (vd: 30 phút)</label>
+                        <input type="text" id="recipe-prep-time-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="recipe-servings-input">Khẩu phần (vd: 4 người)</label>
+                        <input type="text" id="recipe-servings-input">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="recipe-ingredients-input">Nguyên liệu (Mỗi nguyên liệu 1 dòng)</label>
+                    <textarea id="recipe-ingredients-input" rows="5"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="recipe-instructions-input">Các bước thực hiện (Mỗi bước 1 dòng)</label>
+                    <textarea id="recipe-instructions-input" rows="7"></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Lưu lại</button>
+                    <button type="button" id="cancel-btn" class="btn btn-secondary">Hủy</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="admin-table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Hình ảnh</th>
+                        <th>Tiêu đề</th>
+                        <th>Mô tả</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody id="recipe-table-body">
+                    </tbody>
+            </table>
+        </div>
+
+    </main>
+
+    <script src="js/auth.js"></script>
+    <script src="js/admin-recipe.js"></script> </body>
+</html>

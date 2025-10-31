@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ sơ của tôi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <a href="index.html">LogoBếp</a>
+            </div>
+            <div class="search-bar">
+                <input type="text" placeholder="Tìm kiếm công thức...">
+                <button>Tìm</button>
+            </div>
+            <div class="user-actions">
+                </div>
+        </nav>
+    </header>
+
+    <main class="profile-container">
+        <h1>Hồ sơ của tôi</h1>
+        
+        <div class="profile-tabs">
+            <button class="tab-link active" data-tab="tab-info">Cập nhật thông tin</button>
+            <button class="tab-link" data-tab="tab-favorites">Món yêu thích</button>
+            <button class="tab-link" data-tab="tab-history">Lịch sử xem</button>
+        </div>
+
+        <div id="tab-info" class="tab-content active">
+            <h3>Cập nhật thông tin cá nhân</h3>
+            <form class="profile-form">
+                <div class="form-group">
+                    <label for="username">Tên hiển thị</label>
+                    <input type="text" id="username" value="ten_user_hien_tai">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" value="email@example.com" disabled>
+                </div>
+                <button type="submit" class="btn">Lưu thay đổi</button>
+            </form>
+        </div>
+
+        <div id="tab-favorites" class="tab-content">
+            <h3>Công thức đã yêu thích</h3>
+            <div class="recipe-grid">
+                <p>Bạn chưa yêu thích món ăn nào.</p>
+            </div>
+        </div>
+        
+        <div id="tab-history" class="tab-content">
+            <h3>Lịch sử đã xem</h3>
+            <ul>
+                <li><a href="recipe-detail.html?id=1">Gà Nướng Mật Ong</a> - 31/10/2025</li>
+                <li><a href="recipe-detail.html?id=2">Cá Hồi Áp Chảo</a> - 30/10/2025</li>
+            </ul>
+        </div>
+    </main>
+
+   <footer>
+    <div class="footer-container">
+        
+        <div class="footer-column about">
+            <div class="logo">
+                <a href="index.html">LogoBếp</a>
+            </div>
+            <p>Trang web chia sẻ công thức nấu ăn, là một phần của đồ án sinh viên. Giúp bạn tìm kiếm và khám phá các món ăn mới mỗi ngày.</p>
+        </div>
+        
+        <div class="footer-column links">
+            <h4>Liên kết nhanh</h4>
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+                <li><a href="search.html">Tìm kiếm</a></li>
+                <li><a href="profile.html">Hồ sơ của tôi</a></li>
+                <li><a href="admin-dashboard.html">Trang Quản trị</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-column social">
+            <h4>Theo dõi chúng tôi</h4>
+            <div class="social-links">
+                <a href="#">Facebook</a>
+                <a href="#">Instagram</a>
+                <a href="#">Youtube</a>
+                <a href="#">Pinterest</a>
+            </div>
+        </div>
+        
+    </div>
+    
+    <div class="footer-bottom">
+        <p>&copy; 2025 Web Dạy Nấu Ăn. Đồ án sinh viên.</p>
+    </div>
+</footer>
+
+    <script src="js/auth.js"></script>
+    <script>
+        // JS đơn giản để chuyển tab
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.tab-link');
+            const contents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const target = document.getElementById(tab.dataset.tab);
+
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    contents.forEach(c => c.classList.remove('active'));
+                    target.classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
