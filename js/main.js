@@ -1,62 +1,48 @@
-// File: js/main.js (DÙNG DỮ LIỆU GIẢ)
+// File: js/main.js (PHIÊN BẢN KẾT NỐI API THẬT)
 
 document.addEventListener('DOMContentLoaded', function() {
     
     const recipeContainer = document.getElementById('recipe-list-container');
     const categoryContainer = document.getElementById('category-list-container');
 
-    // === DỮ LIỆU GIẢ (MOCK DATA) ===
+    // === (GIỮ LẠI) DỮ LIỆU GIẢ CHO DANH MỤC ===
+    // (Vì chúng ta chưa làm API "GET /api/categories")
     const mockCategories = [
-        { name: "Món Chiên", image: "https://images.unsplash.com/photo-1599043513900-ed1e001c6868?w=200&auto=format&fit=crop" },
-        { name: "Món Xào", image: "https://images.unsplash.com/photo-1512423527246-01a6b0c2a7e7?w=200&auto=format&fit=crop" },
-        { name: "Món Canh", image: "https://images.unsplash.com/photo-1628113888361-56740b3c66f5?w=200&auto=format&fit=crop" },
-        { name: "Món Nướng", image: "https://images.unsplash.com/photo-1598511757132-00356618e7d2?w=200&auto=format&fit=crop" },
-        { name: "Món Lẩu", image: "https://plus.unsplash.com/premium_photo-1673830252112-715f53f1911a?w=200&auto=format&fit=crop" },
-        { name: "Món Chay", image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=200&auto=format&fit=crop" }
+        { name: "Món Chiên", image: "images/monchien.jpg" }, // Nhớ sửa lại tên ảnh cho đúng
+        { name: "Món Xào", image: "images/moxao.webp" },
+        { name: "Món Canh", image: "images/moncanh.jpg" },
+        { name: "Món Nướng", image: "images/monnuong.webp" },
+        { name: "Món Lẩu", image: "images/monlau.webp" },
+        { name: "Món Chay", image: "images/monchay.jpg" }
     ];
 
-    const mockRecipes = [
-        {
-            id: 1,
-            title: "Gà Nướng Mật Ong",
-            description: "Món gà nướng thơm lừng, da giòn, thịt mềm.",
-            image: "https://images.unsplash.com/photo-1598511757132-00356618e7d2?w=500&auto=format&fit=crop"
-        },
-        {
-            id: 2,
-            title: "Cá Hồi Áp Chảo Sốt Bơ Tỏi",
-            description: "Món ăn Tây sang trọng, giàu dinh dưỡng và dễ làm.",
-            image: "https://images.unsplash.com/photo-1541795771680-bddf9191e3b1?w=500&auto=format&fit=crop"
-        },
-        {
-            id: 3,
-            title: "Rau Xào Thập Cẩm",
-            description: "Món xào nhanh gọn, thanh đạm và đầy đủ vitamin.",
-            image: "https://images.unsplash.com/photo-1512423527246-01a6b0c2a7e7?w=500&auto=format&fit=crop"
-        },
-        {
-            id: 4,
-            title: "Bò Lúc Lắc Khoai Tây",
-            description: "Thịt bò mềm mọng, đậm vị, ăn kèm khoai tây chiên.",
-            image: "https://images.unsplash.com/photo-1594041682736-0f83c6788e0b?w=500&auto=format&fit=crop"
-        },
-        {
-            id: 5,
-            title: "Phở Bò Hà Nội",
-            description: "Hương vị truyền thống của phở bò, nước dùng trong.",
-            image: "https://images.unsplash.com/photo-1589304017356-6d00424597d8?w=500&auto=format&fit=crop"
-        },
-        {
-            id: 6,
-            title: "Salad Ức Gà Giảm Cân",
-            description: "Bữa ăn lành mạnh, tươi mát với ức gà áp chảo.",
-            image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&auto=format&fit=crop"
+    // === (MỚI) HÀM GỌI API LẤY CÔNG THỨC THẬT ===
+    async function fetchRecipesFromBackend() {
+        if (!recipeContainer) return;
+        
+        try {
+            // Chỉ lấy 6 món ăn mới nhất (trang 0, kích thước 6)
+            const response = await fetch('http://localhost:8080/api/recipes?page=0&size=6');
+            if (!response.ok) throw new Error('Không thể tải công thức từ backend');
+            
+            const recipePage = await response.json(); // Lấy dữ liệu dạng Page
+            const realRecipes = recipePage.content; // Mảng công thức nằm trong .content
+            
+            if (realRecipes.length === 0) {
+                 recipeContainer.innerHTML = "<p>Chưa có công thức nào. Vui lòng thêm ở trang Admin.</p>";
+                 return;
+            }
+            displayRecipes(realRecipes); // Dùng dữ liệu thật để "vẽ"
+            
+        } catch (error) {
+            console.error("Lỗi khi tải công thức:", error);
+            recipeContainer.innerHTML = "<p>Lỗi kết nối đến server. Backend có đang chạy?</p>";
         }
-    ];
+    }
 
     // === CÁC HÀM HIỂN THỊ ===
 
-    // (MỚI) Hàm hiển thị Danh mục
+    // (Giữ nguyên) Hàm hiển thị Danh mục
     function displayCategories(categories) {
         if (!categoryContainer) return;
         categoryContainer.innerHTML = '';
@@ -72,9 +58,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Hàm hiển thị Công thức
+    // (Giữ nguyên) Hàm này giờ sẽ nhận dữ liệu THẬT từ CSDL
     function displayRecipes(recipes) {
-        if (!recipeContainer) return;
         recipeContainer.innerHTML = '';
         const userLoggedIn = isLoggedIn(); // Từ auth.js
 
@@ -82,6 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const favoriteButtonHTML = userLoggedIn ? 
                 `<div class="favorite-icon" data-recipe-id="${recipe.id}">&hearts;</div>` : '';
             
+            // Dùng các trường từ CSDL (ví dụ: recipe.title, recipe.image)
             const recipeCardHTML = `
                 <div class="recipe-card">
                     ${favoriteButtonHTML}
@@ -98,6 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (userLoggedIn) { addFavoriteClickEvents(); }
     }
 
+    // (Giữ nguyên) Hàm xử lý click Yêu thích
     function addFavoriteClickEvents() {
         document.querySelectorAll('.favorite-icon').forEach(icon => {
             icon.addEventListener('click', function(e) {
@@ -109,6 +96,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // === GỌI HÀM KHI TẢI TRANG ===
-    displayCategories(mockCategories);
-    displayRecipes(mockRecipes);
+    displayCategories(mockCategories); // Vẫn dùng data giả
+    fetchRecipesFromBackend(); // (MỚI) Dùng API thật
 });

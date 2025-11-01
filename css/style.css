@@ -785,3 +785,50 @@ footer {
     background-color: var(--border-color);
     margin: 0.5rem 0;
 }
+.btn-favorite {
+    background-color: #f0f0f0;
+    color: var(--dark-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.75rem 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem; /* Khoảng cách với ảnh bên dưới */
+}
+
+/* Ẩn nút nếu có class .hidden (do JS điều khiển) */
+.btn-favorite.hidden {
+    display: none;
+}
+
+.btn-favorite:hover {
+    background-color: #e0e0e0;
+}
+
+/* Trạng thái đã yêu thích (JS sẽ thêm/xóa class 'active') */
+.btn-favorite.active {
+    background-color: var(--primary-color);
+    color: var(--light-color);
+    border-color: var(--primary-color-dark);
+}
+/* --- (MỚI) CSS CHO XEM TRƯỚC ẢNH (ADMIN) --- */
+.image-preview-box {
+    width: 100%;
+    max-width: 300px; /* Giới hạn chiều rộng xem trước */
+    height: auto;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    margin-top: 1rem;
+    object-fit: cover;
+}
+
+.image-preview-box.hidden {
+    display: none; /* Ẩn đi khi chưa chọn ảnh */
+}
+
+/* Tùy chỉnh nút input file (cho đẹp hơn) */
+#recipe-image-input {
+    font-size: 0.9rem;
+}
