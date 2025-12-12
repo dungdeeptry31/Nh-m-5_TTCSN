@@ -1,135 +1,196 @@
-// File: js/recipe-detail.js (PHIÊN BẢN KẾT NỐI API THẬT)
+// File: js/recipe-detail.js
 
-// Dữ liệu giả (mockRecipeFull) đã bị XÓA
+// --- 1. KHAI BÁO ĐỊA CHỈ SERVER ---
+const API_BASE_URL = 'http://localhost:8080'; 
 
 document.addEventListener('DOMContentLoaded', async () => {
     
-    // 1. Lấy ID từ URL
+    // 2. Lấy ID từ URL
     const params = new URLSearchParams(window.location.search);
     const recipeId = params.get('id');
 
     if (!recipeId) {
-        displayError("Không tìm thấy món ăn!");
+        displayError("Không tìm thấy mã món ăn!");
         return;
     }
 
-    // 2. Gọi API Backend (Java) để lấy chi tiết 1 món ăn
+    // 3. Gọi API Backend để lấy chi tiết món ăn
     try {
-        const response = await fetch(`http://localhost:8080/api/recipes/${recipeId}`);
+        const response = await fetch(`${API_BASE_URL}/api/recipes/${recipeId}`);
+        
         if (!response.ok) {
-            throw new Error('Không tìm thấy công thức hoặc Backend bị lỗi.');
+            throw new Error('Không thể tải dữ liệu.');
         }
         
-        const recipe = await response.json(); // Lấy dữ liệu thật
+        const recipe = await response.json(); 
         
-        // 3. Nếu tìm thấy, "nhồi" dữ liệu vào HTML
+        // 4. Hiển thị dữ liệu lên giao diện
         displayRecipeDetails(recipe);
 
-        // 4. (GIỮ NGUYÊN) Logic Nút Yêu Thích (từ bước trước)
-        // (Chúng ta phải đặt nó ở đây, SAU KHI đã lấy được recipe)
-        if (typeof isLoggedIn === 'function' && isLoggedIn()) { 
+        // --- (MỚI) 5. LƯU LỊCH SỬ XEM ---
+        // Logic: Nếu đã đăng nhập -> Gọi API báo cho server biết user vừa xem món này
+        if (typeof isLoggedIn !== 'undefined' && isLoggedIn()) { 
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if (user) {
+                saveHistory(user.email, recipeId); // <--- HÀM MỚI ĐƯỢC GỌI TẠI ĐÂY
+            }
+
+            // --- 6. Xử lý nút Yêu thích ---
             const favButton = document.getElementById('favorite-btn');
-            
             if(favButton) {
                 favButton.classList.remove('hidden');
                 
-                // TODO: Sau này, chúng ta cần gọi API /api/favorites/check
-                // để xem user đã "like" món này từ trước chưa.
-                // Tạm thời, vẫn giả lập là "chưa like".
-                let isFavorited = false; 
+                checkFavoriteStatus(user.email, recipeId, favButton);
                 
                 favButton.addEventListener('click', () => {
-                    isFavorited = !isFavorited;
-                    
-                    if (isFavorited) {
-                        favButton.classList.add('active');
-                        favButton.innerHTML = '❤️ Đã lưu vào yêu thích';
-                        // TODO: Gọi API POST /api/favorites/add
-                        console.log(`(API Thật) Sẽ gọi POST /api/favorites/add với ID: ${recipe.id}`);
-                    } else {
+                    const isActive = favButton.classList.contains('active');
+                    if (isActive) {
+                        toggleFavorite('remove', user.email, recipeId);
                         favButton.classList.remove('active');
                         favButton.innerHTML = '♡ Thêm vào yêu thích';
-                         // TODO: Gọi API POST /api/favorites/remove
-                        console.log(`(API Thật) Sẽ gọi POST /api/favorites/remove với ID: ${recipe.id}`);
+                    } else {
+                        toggleFavorite('add', user.email, recipeId);
+                        favButton.classList.add('active');
+                        favButton.innerHTML = '❤️ Đã lưu vào yêu thích';
                     }
                 });
             }
         }
         
     } catch (error) {
-        console.error("Lỗi khi tải chi tiết món ăn:", error);
+        console.error("Lỗi chi tiết:", error);
         displayError(error.message);
     }
 });
 
-
 /**
- * Hàm hiển thị chi tiết công thức
- * (Sửa lại để đọc dữ liệu từ API)
+ * (MỚI) Hàm gọi API lưu lịch sử xem
  */
-function displayRecipeDetails(recipe) {
-    // Cập nhật tiêu đề trang
-    document.title = recipe.title;
-
-    // Nhồi dữ liệu cơ bản (tên trường phải khớp với Entity Java)
-    document.getElementById('recipe-title').innerText = recipe.title;
-    document.getElementById('recipe-image').src = recipe.image;
-    document.getElementById('recipe-image').alt = recipe.title;
-    document.getElementById('recipe-description').innerText = recipe.description;
-    document.getElementById('recipe-prep-time').innerText = `Thời gian: ${recipe.prepTime}`;
-    document.getElementById('recipe-servings').innerText = `Khẩu phần: ${recipe.servings}`;
-
-    // Nhồi danh sách Nguyên liệu
-    // (Lưu ý: API GET /api/recipes/{id} phải trả về cả recipeIngredients)
-    const ingredientsList = document.getElementById('recipe-ingredients-list');
-    ingredientsList.innerHTML = '';
-    
-    // (Kiểm tra xem backend có trả về recipeIngredients không)
-    if (recipe.recipeIngredients && recipe.recipeIngredients.length > 0) {
-        recipe.recipeIngredients.forEach(item => {
-            const li = document.createElement('li');
-            // Ghép Note (vd: "1kg") + Tên (vd: "Thịt bò")
-            li.innerText = `${item.note || ''} ${item.ingredient.name}`;
-            ingredientsList.appendChild(li);
+async function saveHistory(email, recipeId) {
+    try {
+        // Gọi API ngầm, không cần chờ kết quả (fire and forget)
+        fetch(`${API_BASE_URL}/api/history/save`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                email: email, 
+                recipeId: recipeId 
+            })
         });
-    } else {
-        ingredientsList.innerHTML = '<li>(Chưa cập nhật nguyên liệu)</li>';
-    }
-
-
-    // Nhồi danh sách Hướng dẫn
-    const instructionsList = document.getElementById('recipe-instructions-list');
-    instructionsList.innerHTML = '';
-    
-    // (Kiểm tra xem backend có trả về recipeSteps không)
-    if (recipe.recipeSteps && recipe.recipeSteps.length > 0) {
-        // Sắp xếp các bước theo đúng thứ tự
-        recipe.recipeSteps.sort((a, b) => a.stepNumber - b.stepNumber);
-        
-        recipe.recipeSteps.forEach(item => {
-            const li = document.createElement('li');
-            li.innerText = item.description;
-            instructionsList.appendChild(li);
-        });
-    } else {
-         instructionsList.innerHTML = '<li>(Chưa cập nhật hướng dẫn)</li>';
+    } catch (err) {
+        console.error("Lỗi lưu lịch sử:", err);
     }
 }
 
 /**
- * Hàm hiển thị lỗi (Giữ nguyên)
+ * Hàm hiển thị dữ liệu lên HTML
  */
-function displayError(message) {
-    document.getElementById('recipe-title').innerText = "Lỗi";
-    document.getElementById('recipe-description').innerText = `Không thể tải món ăn. (${message})`;
-    
-    const meta = document.querySelector('.recipe-meta');
-    const image = document.querySelector('.recipe-hero-image');
-    const content = document.querySelector('.recipe-content');
-    const favButton = document.getElementById('favorite-btn');
+function displayRecipeDetails(recipe) {
+    document.title = recipe.title;
 
-    if (meta) meta.style.display = 'none';
-    if (image) image.style.display = 'none';
-    if (content) content.style.display = 'none';
-    if (favButton) favButton.style.display = 'none';
+    document.getElementById('recipe-title').innerText = recipe.title;
+    document.getElementById('recipe-description').innerText = recipe.description || '';
+    document.getElementById('recipe-prep-time').innerText = `Thời gian: ${recipe.prepTime || 'N/A'}`;
+    document.getElementById('recipe-servings').innerText = `Khẩu phần: ${recipe.servings || 'N/A'}`;
+
+    // Xử lý ảnh
+    let imageUrl = 'images/default-placeholder.png';
+    if (recipe.image) {
+        if (recipe.image.startsWith('http')) {
+            imageUrl = recipe.image;
+        } else {
+            imageUrl = `${API_BASE_URL}/uploads/${recipe.image}`;
+        }
+    }
+    
+    const imgElement = document.getElementById('recipe-image');
+    if (imgElement) {
+        imgElement.src = imageUrl;
+        imgElement.alt = recipe.title;
+        imgElement.onerror = function() {
+            this.onerror = null;
+            this.src = 'https://via.placeholder.com/600x400?text=Image+Error';
+        };
+    }
+
+    // Hiển thị Nguyên liệu
+    const ingredientsList = document.getElementById('recipe-ingredients-list');
+    if (ingredientsList) {
+        ingredientsList.innerHTML = '';
+        if (recipe.ingredients && recipe.ingredients.length > 0) {
+            recipe.ingredients.forEach(item => {
+                const li = document.createElement('li');
+                const text = typeof item === 'object' ? (item.name || JSON.stringify(item)) : item;
+                li.innerText = text;
+                ingredientsList.appendChild(li);
+            });
+        } else {
+            ingredientsList.innerHTML = '<li>Chưa cập nhật nguyên liệu.</li>';
+        }
+    }
+
+    // Hiển thị Cách làm
+    const instructionsList = document.getElementById('recipe-instructions-list');
+    if (instructionsList) {
+        instructionsList.innerHTML = ''; 
+        let stepsData = recipe.steps || recipe.instructions || [];
+        
+        if (stepsData.length > 0) {
+            if (stepsData[0].stepNumber) {
+                stepsData.sort((a, b) => a.stepNumber - b.stepNumber);
+            }
+            stepsData.forEach((item, index) => {
+                const li = document.createElement('li');
+                let text = '';
+                if (typeof item === 'object') {
+                    text = item.instruction || item.description || JSON.stringify(item);
+                } else {
+                    text = item;
+                }
+                li.innerHTML = `<strong>Bước ${index + 1}:</strong> ${text}`;
+                instructionsList.appendChild(li);
+            });
+        } else {
+             instructionsList.innerHTML = '<li>Chưa cập nhật hướng dẫn.</li>';
+        }
+    }
+}
+
+/**
+ * Hàm kiểm tra trạng thái yêu thích
+ */
+async function checkFavoriteStatus(email, recipeId, btn) {
+    try {
+        const res = await fetch(`${API_BASE_URL}/api/favorites/check`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email, recipeId: parseInt(recipeId) })
+        });
+        if (res.ok) {
+            const isFavorited = await res.json();
+            if (isFavorited) {
+                btn.classList.add('active');
+                btn.innerHTML = '❤️ Đã lưu vào yêu thích';
+            }
+        }
+    } catch (err) { console.error(err); }
+}
+
+/**
+ * Hàm Thêm/Xóa yêu thích
+ */
+async function toggleFavorite(action, email, recipeId) {
+    try {
+        await fetch(`${API_BASE_URL}/api/favorites/${action}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email, recipeId: parseInt(recipeId) })
+        });
+    } catch (err) { console.error(err); }
+}
+
+function displayError(message) {
+    const titleEl = document.getElementById('recipe-title');
+    if(titleEl) titleEl.innerText = "Rất tiếc!";
+    document.querySelector('.recipe-content').innerHTML = `<p style="text-align:center">${message}</p>`;
 }

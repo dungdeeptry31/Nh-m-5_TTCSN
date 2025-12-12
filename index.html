@@ -3,53 +3,387 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trang chủ - Web Dạy Nấu Ăn</title>
+    <title>Trang chủ - LogoBếp: Khám phá ẩm thực</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+        :root {
+            --primary-color: #e67e22; /* Cam cháy */
+            --primary-hover: #d35400;
+            --secondary-color: #2c3e50; /* Xanh than */
+            --text-dark: #333;
+            --text-light: #666;
+            --bg-light: #f9f9f9;
+            --white: #ffffff;
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+            background-color: var(--white);
+            line-height: 1.6;
+        }
+
+        /* --- NAVBAR --- */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 20px;
+        }
+        .logo a {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+        
+        /* Search Bar */
+        .search-bar {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 30px;
+            display: flex;
+            position: relative;
+        }
+        .search-bar input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #eee;
+            border-radius: 50px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .search-bar input:focus {
+            border-color: var(--primary-color);
+        }
+        .search-bar button {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        .search-bar button:hover { background-color: var(--primary-hover); }
+
+        /* User Actions */
+        .user-actions a {
+            text-decoration: none;
+            color: var(--secondary-color);
+            font-weight: 500;
+            margin-left: 15px;
+            transition: color 0.3s;
+        }
+        .user-actions a:hover { color: var(--primary-color); }
+        .btn-login-nav {
+            border: 1px solid var(--primary-color);
+            padding: 8px 20px;
+            border-radius: 20px;
+            color: var(--primary-color) !important;
+        }
+        .btn-login-nav:hover { background-color: var(--primary-color); color: white !important; }
+
+        /* Dropdown User */
+        .user-profile-button { cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            box-shadow: var(--shadow);
+            border-radius: 8px;
+            min-width: 200px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        #logged-in-user { position: relative; }
+        .dropdown-menu a {
+            padding: 12px 20px;
+            margin: 0;
+            display: block;
+        }
+        .dropdown-menu a:hover { background-color: #f5f5f5; }
+        .dropdown-divider { height: 1px; background: #eee; margin: 5px 0; }
+        .hidden { display: none !important; }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            /* Hình nền minh họa - Bạn có thể thay link ảnh khác */
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(/images/rauxao.jpg);
+            background-size: cover;
+            background-position: center;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--white);
+        }
+        .hero-content h1 { font-size: 48px; margin-bottom: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .hero-content p { font-size: 20px; margin-bottom: 30px; opacity: 0.9; }
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 15px 40px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 18px;
+            transition: transform 0.3s, background 0.3s;
+            display: inline-block;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        /* --- SECTIONS (Category & Recipe) --- */
+        section { padding: 60px 20px; max-width: 1200px; margin: 0 auto; }
+        section h2 {
+            text-align: center;
+            font-size: 32px;
+            color: var(--secondary-color);
+            margin-bottom: 40px;
+            position: relative;
+        }
+        section h2::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: var(--primary-color);
+            margin: 10px auto 0;
+            border-radius: 2px;
+        }
+
+        /* Grid Layout */
+        .category-grid, .recipe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        /* Style giả lập cho Card (Khi chưa có JS render) */
+        /* JS của bạn sẽ điền nội dung vào đây, CSS này đảm bảo khung hình đẹp */
+        .category-card, .recipe-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .category-card:hover, .recipe-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        .recipe-card img, .category-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .category-title, .recipe-card h3 {
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin: 0;
+        }
+        .recipe-card p {
+            padding: 0 15px 15px;
+            color: var(--text-light);
+            font-size: 14px;
+            text-align: center;
+        }
+
+        /* --- FOOTER CÂN ĐỐI --- */
+        footer {
+            background-color: #222;
+            color: #ccc;
+            padding: 60px 0 20px;
+            margin-top: 50px;
+        }
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex; /* Dùng Flexbox */
+            justify-content: space-between; /* Chia đều khoảng cách */
+            flex-wrap: wrap; /* Xuống dòng trên mobile */
+            padding: 0 20px;
+            gap: 40px;
+        }
+        .footer-column {
+            flex: 1; /* Mỗi cột chiếm độ rộng bằng nhau */
+            min-width: 250px;
+        }
+        .footer-column h4 { color: var(--white); margin-bottom: 20px; font-size: 18px; }
+        .footer-column p { line-height: 1.6; font-size: 14px; }
+        
+        .footer-column ul { list-style: none; padding: 0; }
+        .footer-column ul li { margin-bottom: 10px; }
+        .footer-column ul li a {
+            color: #ccc; text-decoration: none; transition: color 0.3s;
+        }
+        .footer-column ul li a:hover { color: var(--primary-color); padding-left: 5px; }
+
+        .social-links a {
+            display: inline-block;
+            margin-right: 15px;
+            color: #fff;
+            background: #333;
+            width: 35px; height: 35px;
+            line-height: 35px;
+            text-align: center;
+            border-radius: 50%;
+            transition: background 0.3s;
+            text-decoration: none;
+        }
+        .social-links a:hover { background: var(--primary-color); }
+
+        .footer-bottom {
+            text-align: center;
+            border-top: 1px solid #333;
+            margin-top: 40px;
+            padding-top: 20px;
+            font-size: 13px;
+        }
+
+        /* --- CHAT WIDGET --- */
+        #chat-widget-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(230, 126, 34, 0.4);
+            z-index: 2000;
+            transition: transform 0.3s;
+            animation: bounce 2s infinite;
+        }
+        #chat-widget-button:hover { transform: scale(1.1); }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+
+        #chat-window {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 350px;
+            height: 450px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.15);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+        .chat-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-header h4 { margin: 0; }
+        .chat-header button { background: none; border: none; color: white; font-size: 18px; cursor: pointer; }
+        
+        .chat-body { flex: 1; padding: 15px; overflow-y: auto; background: #f9f9f9; }
+        
+        .chat-footer { padding: 10px; border-top: 1px solid #eee; display: flex; gap: 10px; }
+        .chat-footer input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
+        .chat-footer button {
+            background: var(--primary-color); color: white; border: none; padding: 0 20px;
+            border-radius: 20px; cursor: pointer;
+        }
+
+    </style>
 </head>
 <body>
 
     <header>
         <nav class="navbar">
             <div class="logo">
-                <a href="index.html">LogoBếp</a>
+                <a href="index.html"><i class="fas fa-utensils"></i> LogoBếp</a>
             </div>
+            
             <div class="search-bar">
-                <input type="text" placeholder="Tìm kiếm công thức...">
-                <button>Tìm</button>
+                <input type="text" placeholder="Tìm kiếm công thức, nguyên liệu...">
+                <button><i class="fas fa-search"></i></button>
             </div>
+            
             <div class="user-actions">
-    
-    <div id="logged-out-actions">
-        <a href="login.html">Đăng nhập</a>
-        <a href="register.html">Đăng ký</a>
-    </div>
+                <div id="logged-out-actions">
+                    <a href="login.html">Đăng nhập</a>
+                    <a href="register.html" class="btn-login-nav">Đăng ký</a>
+                </div>
 
-    <div id="logged-in-user" class="hidden">
-        <div id="user-profile-button" class="user-profile-button">
-            <span id="username-display">Chào, ...</span>
-            <span>▼</span> </div>
-        
-        <div id="dropdown-menu" class="dropdown-menu hidden">
-            <a href="profile.html">Tài khoản cá nhân</a>
-            <a href="admin-dashboard.html" id="admin-link">Trang Quản trị</a>
-            <div class="dropdown-divider"></div>
-            <a href="#" id="logout-btn-dropdown">Đăng xuất</a>
-        </div>
-    </div>
-    
-</div>
+                <div id="logged-in-user" class="hidden">
+                    <div id="user-profile-button" class="user-profile-button">
+                        <span id="username-display" style="font-weight: 600;">Chào, User</span>
+                        <i class="fas fa-chevron-down" style="font-size: 12px; color: #888;"></i>
+                    </div>
+                    
+                    <div id="dropdown-menu" class="dropdown-menu hidden">
+                        <a href="profile.html"><i class="fas fa-user-circle"></i> Tài khoản cá nhân</a>
+                        <a href="admin-dashboard.html" id="admin-link" class="hidden"><i class="fas fa-cogs"></i> Trang Quản trị</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" id="logout-btn-dropdown" style="color: #e74c3c;"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                    </div>
+                </div>
+            </div>
         </nav>
     </header>
 
     <main>
-        
         <section class="hero">
             <div class="hero-content">
-                <h1>Khám phá +2.000 công thức</h1>
-                <p>Nấu gì hôm nay? Hãy để chúng tôi giúp bạn!</p>
+                <h1>Khám phá +2.000 công thức nấu ăn</h1>
+                <p>Nấu gì hôm nay không còn là nỗi lo. Hãy để chúng tôi giúp bạn trở thành đầu bếp tại gia!</p>
                 <a href="#recipe-showcase" class="btn btn-primary">Xem món mới nhất</a>
             </div>
         </section>
@@ -68,53 +402,59 @@
         
     </main>
 
-    <<footer>
-    <div class="footer-container">
-        
-        <div class="footer-column about">
-            <div class="logo">
-                <a href="index.html">LogoBếp</a>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-column about">
+                <div class="logo" style="margin-bottom: 15px;">
+                    <a href="index.html" style="color: var(--primary-color); text-decoration: none; font-size: 24px; font-weight: bold;">LogoBếp</a>
+                </div>
+                <p>Nơi chia sẻ niềm đam mê nấu nướng. Chúng tôi cung cấp hàng ngàn công thức từ món Việt truyền thống đến ẩm thực quốc tế.</p>
             </div>
-            <p>Trang web chia sẻ công thức nấu ăn, là một phần của đồ án sinh viên. Giúp bạn tìm kiếm và khám phá các món ăn mới mỗi ngày.</p>
-        </div>
-        
-        <div class="footer-column links">
-            <h4>Liên kết nhanh</h4>
-            <ul>
-                <li><a href="index.html">Trang chủ</a></li>
-                <li><a href="search.html">Tìm kiếm</a></li>
-                <li><a href="profile.html">Hồ sơ của tôi</a></li>
-                <li><a href="admin-dashboard.html">Trang Quản trị</a></li>
-            </ul>
-        </div>
-        
-        <div class="footer-column social">
-            <h4>Theo dõi chúng tôi</h4>
-            <div class="social-links">
-                <a href="#">Facebook</a>
-                <a href="#">Instagram</a>
-                <a href="#">Youtube</a>
-                <a href="#">Pinterest</a>
+            
+            <div class="footer-column links">
+                <h4>Liên kết nhanh</h4>
+                <ul>
+                    <li><a href="index.html">Trang chủ</a></li>
+                    <li><a href="search.html">Tìm kiếm nâng cao</a></li>
+                    <li><a href="profile.html">Hồ sơ của tôi</a></li>
+                    <li><a href="admin-manage-recipes.html">Dành cho Admin</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column social">
+                <h4>Theo dõi chúng tôi</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-pinterest"></i></a>
+                </div>
+                <p style="margin-top: 15px;">Đăng ký nhận bản tin:</p>
+                <div style="display: flex; gap: 5px;">
+                    <input type="email" placeholder="Email của bạn..." style="padding: 8px; border-radius: 4px; border: none; flex: 1;">
+                    <button style="padding: 8px 15px; background: var(--primary-color); border: none; border-radius: 4px; color: white; cursor: pointer;">Gửi</button>
+                </div>
             </div>
         </div>
         
-    </div>
-    
-    <div class="footer-bottom">
-        <p>&copy; 2025 Web Dạy Nấu Ăn. Đồ án sinh viên.</p>
-    </div>
-</footer>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Web Dạy Nấu Ăn</p>
+        </div>
+    </footer>
 
-    <div id="chat-widget-button">💬</div>
+    <div id="chat-widget-button"><i class="fas fa-comment-dots"></i></div>
+    
     <div id="chat-window" class="hidden">
         <div class="chat-header">
-            <h4>Trợ lý Bếp AI</h4>
-            <button id="close-chat">X</button>
+            <h4><i class="fas fa-robot"></i> Trợ lý Bếp AI</h4>
+            <button id="close-chat"><i class="fas fa-times"></i></button>
         </div>
-        <div class="chat-body" id="chat-body"></div>
+        <div class="chat-body" id="chat-body">
+            <p style="color: #888; text-align: center; margin-top: 20px;">Chào bạn! Tôi có thể giúp gì cho bữa ăn hôm nay?</p>
+        </div>
         <div class="chat-footer">
             <input type="text" id="chat-input" placeholder="Hỏi tôi bất cứ gì...">
-            <button id="send-chat-btn">Gửi</button>
+            <button id="send-chat-btn"><i class="fas fa-paper-plane"></i></button>
         </div>
     </div>
 

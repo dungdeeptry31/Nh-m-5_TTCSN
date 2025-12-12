@@ -1,105 +1,159 @@
-// File: js/admin-category.js
-
-const mockCategories = [
-    { id: 1, name: "Món Chiên", image: "https://images.unsplash.com/photo-1599043513900-ed1e001c6868?w=300&auto=format&fit=crop" },
-    { id: 2, name: "Món Xào", image: "https://images.unsplash.com/photo-1512423527246-01a6b0c2a7e7?w=300&auto=format&fit=crop" },
-    { id: 3, name: "Món Canh", image: "https://images.unsplash.com/photo-1628113888361-56740b3c66f5?w=300&auto=format&fit=crop" },
-    { id: 4, name: "Món Nướng", image: "https://images.unsplash.com/photo-1598511757132-00356618e7d2?w=300&auto=format&fit=crop" },
-    { id: 5, name: "Món Lẩu", image: "https://plus.unsplash.com/premium_photo-1673830252112-715f53f1911a?w=300&auto=format&fit=crop" },
-    { id: 6, name: "Món Chay", image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&auto=format&fit=crop" }
-];
+// File: js/admin-category.js (BẢN CHUẨN ĐỒNG BỘ ID)
+const API_BASE_URL = 'http://localhost:8080';
 
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. Check quyền
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    if (!user || user.role !== 'ADMIN') {
+        alert("Bạn không có quyền truy cập!");
+        window.location.href = 'index.html';
+        return;
+    }
 
-    const tableBody = document.getElementById('category-table-body');
+    // 2. Load danh sách ngay khi vào trang
+    loadCategories();
+
+    // 3. Sự kiện nút bấm
     const formContainer = document.getElementById('category-form-container');
-    const form = document.getElementById('category-form');
-    const addNewBtn = document.getElementById('add-new-btn');
-    const cancelBtn = document.getElementById('cancel-btn');
-    const formTitle = document.getElementById('form-title');
+    
+    // Nút Thêm mới
+    document.getElementById('add-new-btn').addEventListener('click', () => {
+        showForm();
+    });
 
-    function loadCategoryTable() {
-        if (!tableBody) return;
-        tableBody.innerHTML = ''; 
+    // Nút Hủy
+    document.getElementById('cancel-btn').addEventListener('click', () => {
+        formContainer.classList.remove('show');
+        document.getElementById('category-form').reset();
+        document.getElementById('image-preview').style.display = 'none';
+    });
 
-        mockCategories.forEach(category => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${category.id}</td>
-                <td><img src="${category.image}" alt="${category.name}" class="table-thumbnail"></td>
-                <td>${category.name}</td>
-                <td class="table-actions">
-                    <button class="btn btn-edit" data-id="${category.id}">Sửa</button>
-                    <button class="btn btn-delete" data-id="${category.id}">Xóa</button>
-                </td>
-            `;
-            tableBody.appendChild(tr);
-        });
-
-        addTableEventListeners();
-    }
-
-    function addTableEventListeners() {
-        document.querySelectorAll('.btn-edit').forEach(button => {
-            button.addEventListener('click', (e) => editCategory(e.target.dataset.id));
-        });
-        document.querySelectorAll('.btn-delete').forEach(button => {
-            button.addEventListener('click', (e) => deleteCategory(e.target.dataset.id));
-        });
-    }
-
-    function showAddForm() {
-        form.reset();
-        document.getElementById('category-id').value = '';
-        formTitle.innerText = "Thêm danh mục mới";
-        formContainer.classList.remove('hidden');
-    }
-
-    function editCategory(id) {
-        const category = mockCategories.find(c => c.id == id);
-        if (!category) return;
-
-        document.getElementById('category-id').value = category.id;
-        document.getElementById('category-name-input').value = category.name;
-        document.getElementById('category-image-input').value = category.image;
-        
-        formTitle.innerText = `Sửa danh mục (ID: ${category.id})`;
-        formContainer.classList.remove('hidden');
-    }
-
-    function deleteCategory(id) {
-        if (confirm(`Bạn có chắc muốn xóa danh mục ID: ${id} không?`)) {
-            const index = mockCategories.findIndex(c => c.id == id);
-            if (index > -1) {
-                mockCategories.splice(index, 1);
+    // Xem trước ảnh
+    document.getElementById('category-image-input').addEventListener('change', function(e) {
+        if(e.target.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const img = document.getElementById('image-preview');
+                img.src = ev.target.result;
+                img.style.display = 'block';
             }
-            loadCategoryTable();
+            reader.readAsDataURL(e.target.files[0]);
         }
-    }
+    });
 
-    if (form) {
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const id = document.getElementById('category-id').value;
-            const formData = {
-                id: id ? parseInt(id) : Date.now(),
-                name: document.getElementById('category-name-input').value,
-                image: document.getElementById('category-image-input').value
-            };
-
-            if (id) {
-                const index = mockCategories.findIndex(c => c.id == id);
-                if (index > -1) mockCategories[index] = formData;
-            } else {
-                mockCategories.push(formData);
-            }
-            formContainer.classList.add('hidden');
-            loadCategoryTable();
-        });
-    }
-
-    loadCategoryTable();
-
-    if (addNewBtn) addNewBtn.addEventListener('click', showAddForm);
-    if (cancelBtn) cancelBtn.addEventListener('click', () => formContainer.classList.add('hidden'));
+    // 4. Submit Form
+    document.getElementById('category-form').addEventListener('submit', handleFormSubmit);
 });
+
+// --- HÀM TẢI DANH SÁCH ---
+async function loadCategories() {
+    try {
+        const res = await fetch(`${API_BASE_URL}/api/categories`);
+        const categories = await res.json();
+        const tbody = document.getElementById('category-table-body');
+        tbody.innerHTML = '';
+
+        if(categories.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center">Chưa có danh mục nào.</td></tr>';
+            return;
+        }
+
+        categories.forEach(cat => {
+            // Xử lý ảnh
+            let imgUrl = 'https://via.placeholder.com/60?text=No+Img';
+            if (cat.image) {
+                imgUrl = cat.image.startsWith('http') ? cat.image : `${API_BASE_URL}/uploads/${cat.image}`;
+            }
+            
+            const row = `
+                <tr>
+                    <td>${cat.id}</td>
+                    <td>
+                        <img src="${imgUrl}" 
+                             style="width:60px; height:60px; object-fit:cover; border-radius:6px;"
+                             onerror="this.onerror=null; this.src='https://via.placeholder.com/60?text=Error';">
+                    </td>
+                    <td><strong>${cat.name}</strong></td>
+                    <td>
+                        <button class="btn btn-edit" onclick="openEdit(${cat.id})">Sửa</button>
+                        <button class="btn btn-delete" onclick="deleteCategory(${cat.id})">Xóa</button>
+                    </td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        });
+    } catch (err) { console.error(err); }
+}
+
+// --- HÀM SUBMIT (THÊM/SỬA) ---
+async function handleFormSubmit(e) {
+    e.preventDefault();
+    
+    const id = document.getElementById('category-id').value;
+    const name = document.getElementById('category-name-input').value;
+    const file = document.getElementById('category-image-input').files[0];
+    const currentImage = document.getElementById('current-image-path').value;
+
+    const formData = new FormData();
+    formData.append('name', name);
+    if (file) formData.append('file', file);
+    if (id && currentImage) formData.append('currentImage', currentImage);
+
+    const url = id ? `${API_BASE_URL}/api/categories/${id}` : `${API_BASE_URL}/api/categories`;
+    const method = id ? 'PUT' : 'POST';
+
+    try {
+        const res = await fetch(url, { method: method, body: formData });
+        if (res.ok) {
+            alert(id ? "Cập nhật thành công!" : "Thêm mới thành công!");
+            document.getElementById('category-form-container').classList.remove('show');
+            loadCategories();
+        } else {
+            alert("Lỗi: " + await res.text());
+        }
+    } catch (err) { alert("Lỗi kết nối!"); }
+}
+
+// --- HÀM HỖ TRỢ ---
+function showForm() {
+    document.getElementById('category-form').reset();
+    document.getElementById('category-id').value = '';
+    document.getElementById('form-title').innerText = "Thêm danh mục mới";
+    document.getElementById('image-preview').style.display = 'none';
+    document.getElementById('category-form-container').classList.add('show');
+}
+
+async function openEdit(id) {
+    try {
+        const res = await fetch(`${API_BASE_URL}/api/categories/${id}`);
+        const cat = await res.json();
+
+        document.getElementById('category-id').value = cat.id;
+        document.getElementById('category-name-input').value = cat.name;
+        document.getElementById('current-image-path').value = cat.image;
+
+        const img = document.getElementById('image-preview');
+        if(cat.image) {
+            img.src = cat.image.startsWith('http') ? cat.image : `${API_BASE_URL}/uploads/${cat.image}`;
+            img.style.display = 'block';
+        } else {
+            img.style.display = 'none';
+        }
+
+        document.getElementById('form-title').innerText = "Cập nhật danh mục";
+        document.getElementById('category-form-container').classList.add('show');
+    } catch(e) { console.error(e); }
+}
+
+async function deleteCategory(id) {
+    if (!confirm("Xóa danh mục này?")) return;
+    try {
+        const res = await fetch(`${API_BASE_URL}/api/categories/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+            alert("Đã xóa!");
+            loadCategories();
+        } else {
+            alert("Không thể xóa (Có thể danh mục này đang chứa món ăn)");
+        }
+    } catch (err) { alert("Lỗi kết nối!"); }
+}

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách món ăn</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        /* CSS bổ sung riêng cho trang Search */
+        .search-header {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: #fff;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 30px;
+        }
+        .search-header h1 {
+            color: #e67e22; /* Màu cam chủ đạo */
+            margin: 0;
+            font-size: 32px;
+        }
+        .search-header p {
+            color: #666;
+            margin-top: 10px;
+        }
+        
+        /* Grid hiển thị món ăn */
+        .recipe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 50px;
+        }
+        
+        .no-result {
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 50px;
+            color: #888;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <a href="index.html">LogoBếp</a>
+            </div>
+            <div class="search-bar">
+                <input type="text" placeholder="Tìm món khác...">
+                <button>Tìm</button>
+            </div>
+            <div class="user-actions">
+                <a href="index.html">Về trang chủ</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="search-header">
+            <h1 id="page-title">Đang tải...</h1>
+            <p id="result-count"></p>
+        </div>
+
+        <div id="recipe-list-container" class="recipe-grid">
+            </div>
+    </main>
+
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Web Dạy Nấu Ăn</p>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script src="js/search.js"></script>
+</body>
+</html>

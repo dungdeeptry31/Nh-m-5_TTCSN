@@ -8,24 +8,254 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        :root {
+            --primary-color: #e67e22; /* Màu cam chủ đạo của bạn */
+            --secondary-color: #2c3e50; /* Màu xanh đậm cho text/header */
+            --bg-light: #f8f9fa;
+            --border-color: #dee2e6;
+            --success-color: #27ae60;
+            --danger-color: #c0392b;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7f6; /* Nền xám nhẹ cho toàn trang */
+            color: #333;
+            margin: 0;
+        }
+
+        /* --- HEADER --- */
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            padding: 15px 0;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .logo a {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        .user-actions a {
+            text-decoration: none;
+            color: var(--secondary-color);
+            font-weight: 500;
+            margin-left: 25px;
+            transition: color 0.3s;
+        }
+        .user-actions a:hover, .user-actions a.active {
+            color: var(--primary-color);
+        }
+
+        /* --- MAIN CONTAINER --- */
+        .admin-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--bg-light);
+        }
+        .admin-header h1 {
+            margin: 0;
+            color: var(--secondary-color);
+            font-size: 28px;
+        }
+        .btn-add {
+            background-color: var(--success-color);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 4px 6px rgba(39, 174, 96, 0.2);
+        }
+        .btn-add:hover {
+            background-color: #219150;
+            transform: translateY(-2px);
+        }
+
+        /* --- BẢNG DỮ LIỆU (TABLE) --- */
+        .admin-table-container {
+            overflow-x: auto; /* Cho phép cuộn ngang trên màn hình nhỏ */
+        }
+        .admin-table {
+            width: 100%;
+            border-collapse: separate; /* Để dùng border-radius cho hàng */
+            border-spacing: 0 8px; /* Khoảng cách giữa các hàng */
+            margin-top: -8px;
+        }
+        .admin-table th {
+            text-align: left;
+            padding: 15px;
+            color: var(--secondary-color);
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+        }
+        .admin-table td {
+            padding: 15px;
+            background-color: #fff;
+            vertical-align: middle;
+            border-top: 1px solid var(--bg-light);
+            border-bottom: 1px solid var(--bg-light);
+        }
+        .admin-table tr td:first-child {
+            border-left: 1px solid var(--bg-light);
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+        }
+        .admin-table tr td:last-child {
+            border-right: 1px solid var(--bg-light);
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+        .admin-table tbody tr {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            transition: transform 0.2s;
+        }
+        .admin-table tbody tr:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+        }
+        
+        /* Style cho các nút trong bảng (Sửa, Đổi quyền, Xóa) */
+        .admin-table .btn {
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+        .admin-table .btn:hover { opacity: 0.85; }
+
+
+        /* --- MODAL (HỘP THOẠI) --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6); /* Nền tối hơn */
+            backdrop-filter: blur(3px); /* Hiệu ứng làm mờ nền sau */
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 8vh auto; /* Căn giữa theo chiều dọc */
+            padding: 30px;
+            width: 90%;
+            max-width: 450px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            position: relative;
+            animation: slideInDown 0.3s ease-out;
+        }
+        @keyframes slideInDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 32px;
+            font-weight: bold;
+            color: #999;
+            transition: color 0.3s;
+        }
+        .close:hover { color: var(--danger-color); }
+
+        #modalTitle {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--primary-color);
+            font-size: 24px;
+        }
+
+        /* --- FORM NHẬP LIỆU --- */
+        .form-group { margin-bottom: 20px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+        .btn-submit:hover {
+            background-color: #d35400; /* Màu cam đậm hơn khi hover */
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar">
+        <div class="navbar">
             <div class="logo">
                 <a href="index.html">LogoBếp</a>
             </div>
             <div class="user-actions">
-                <a href="admin-dashboard.html">Chào, Admin</a>
-                <a href="#" id="logout-btn">Đăng xuất</a>
+                <a href="admin-manage-recipes.html">Quản lý Món ăn</a>
+                <a href="#" class="active">Quản lý User</a>
+                <a href="index.html">Về trang chủ</a>
             </div>
-        </nav>
+        </div>
     </header>
 
     <main class="admin-container">
         <div class="admin-header">
-            <h1>Quản lý Tài khoản (UC #11)</h1>
-            </div>
+            <h1>Danh sách Tài khoản</h1>
+        </div>
 
         <div class="admin-table-container">
             <table class="admin-table">
@@ -35,16 +265,42 @@
                         <th>Tên hiển thị</th>
                         <th>Email</th>
                         <th>Vai trò</th>
-                        <th>Hành động</th>
+                        <th style="text-align: center;">Hành động</th>
                     </tr>
                 </thead>
                 <tbody id="user-table-body">
                     </tbody>
             </table>
         </div>
-
     </main>
 
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Thêm Tài Khoản</h2>
+            
+            <form id="userForm">
+                <input type="hidden" id="userId"> <div class="form-group">
+                    <label for="userName">Tên hiển thị:</label>
+                    <input type="text" id="userName" placeholder="Ví dụ: Nguyễn Văn A" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="userEmail">Email:</label>
+                    <input type="email" id="userEmail" placeholder="email@example.com" required>
+                </div>
+                
+                <div class="form-group" id="passwordGroup">
+                    <label for="userPassword">Mật khẩu:</label>
+                    <input type="password" id="userPassword" placeholder="Nhập mật khẩu...">
+                </div>
+                
+                <button type="submit" class="btn-submit">Lưu Lại</button>
+            </form>
+        </div>
+    </div>
+
     <script src="js/auth.js"></script>
-    <script src="js/admin-user.js"></script> </body>
+    <script src="js/admin-user.js"></script> 
+</body>
 </html>

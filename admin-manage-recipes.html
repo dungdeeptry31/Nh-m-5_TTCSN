@@ -8,24 +8,254 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        :root {
+            --primary-color: #e67e22;
+            --primary-hover: #d35400;
+            --secondary-color: #34495e;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+        }
+
+        /* --- HEADER & NAVBAR --- */
+        header {
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .logo a {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        .user-actions a {
+            text-decoration: none;
+            color: var(--secondary-color);
+            font-weight: 500;
+            margin-left: 20px;
+            transition: color 0.3s;
+        }
+        .user-actions a:hover { color: var(--primary-color); }
+        #logout-btn { color: #e74c3c; }
+
+        /* --- MAIN CONTAINER --- */
+        .admin-container {
+            max-width: 1200px; /* Rộng hơn chút để chứa bảng nhiều cột */
+            margin: 40px auto;
+            padding: 30px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--bg-color);
+        }
+        .admin-header h1 {
+            margin: 0;
+            font-size: 28px;
+            color: var(--secondary-color);
+        }
+
+        /* --- BUTTONS --- */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 6px rgba(230, 126, 34, 0.2);
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+            margin-left: 10px;
+        }
+        .btn-secondary:hover { background-color: #7f8c8d; }
+
+        /* --- FORM STYLING --- */
+        .admin-form-container {
+            background-color: #fcfcfc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            animation: slideDown 0.4s ease-out;
+        }
+        .admin-form-container.hidden { display: none; }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .admin-form-container h2 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus, 
+        .form-group select:focus, 
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
+        }
+
+        /* Layout hàng ngang cho 3 ô nhỏ */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .form-row { grid-template-columns: 1fr; }
+        }
+
+        /* Image Preview */
+        .image-preview-box {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            object-fit: cover;
+            display: block;
+        }
+        .image-preview-box.hidden { display: none; }
+
+        /* --- TABLE STYLING --- */
+        .admin-table-container { overflow-x: auto; }
+        .admin-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        .admin-table th {
+            background-color: #f8f9fa;
+            color: var(--secondary-color);
+            font-weight: 600;
+            text-align: left;
+            padding: 16px;
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+        }
+        .admin-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+            color: #555;
+        }
+        .admin-table tbody tr:hover { background-color: #fffbf7; }
+
+        /* Ảnh trong bảng */
+        .admin-table img {
+            width: 70px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #eee;
+        }
+
+        /* Xử lý cột mô tả dài */
+        .desc-col {
+            max-width: 250px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            border: none;
+            color: white;
+            margin-right: 5px;
+        }
+        .edit-btn { background-color: #3498db; }
+        .edit-btn:hover { background-color: #2980b9; }
+        .delete-btn { background-color: #e74c3c; }
+        .delete-btn:hover { background-color: #c0392b; }
+
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar">
+        <div class="navbar">
             <div class="logo">
-                <a href="index.html">LogoBếp</a>
+                <a href="index.html">LogoBếp </a>
             </div>
             <div class="user-actions">
                 <a href="admin-dashboard.html">Chào, Admin</a>
                 <a href="#" id="logout-btn">Đăng xuất</a>
             </div>
-        </nav>
+        </div>
     </header>
 
     <main class="admin-container">
         <div class="admin-header">
-            <h1>Quản lý Công thức (UC #13)</h1>
-            <button id="add-new-recipe-btn" class="btn btn-primary">Thêm món mới</button>
+            <h1>Quản lý Công thức</h1>
+            <button id="add-new-recipe-btn" class="btn btn-primary">+ Thêm món mới</button>
         </div>
 
         <div id="recipe-form-container" class="admin-form-container hidden">
@@ -35,47 +265,51 @@
                 
                 <div class="form-group">
                     <label for="recipe-title-input">Tiêu đề món ăn</label>
-                    <input type="text" id="recipe-title-input" required>
+                    <input type="text" id="recipe-title-input" placeholder="Ví dụ: Phở Bò Nam Định" required>
                 </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="recipe-prep-time-input">Thời gian (phút)</label>
+                        <input type="number" id="recipe-prep-time-input" placeholder="VD: 30">
+                    </div>
+                    <div class="form-group">
+                        <label for="recipe-servings-input">Khẩu phần (người)</label>
+                        <input type="number" id="recipe-servings-input" placeholder="VD: 4">
+                    </div>
+                    <div class="form-group">
+                        <label for="recipe-category-input">Danh mục</label>
+                        <select id="recipe-category-input" required>
+                            <option value="">-- Chọn danh mục --</option>
+                            </select>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label for="recipe-description-input">Mô tả ngắn</label>
-                    <textarea id="recipe-description-input" rows="3"></textarea>
+                    <textarea id="recipe-description-input" rows="3" placeholder="Giới thiệu sơ lược về món ăn..."></textarea>
                 </div>
+
                 <div class="form-group">
-                    <label for="recipe-image-input">Chọn hình ảnh</label>
+                    <label for="recipe-image-input">Hình ảnh món ăn</label>
                     <input type="file" id="recipe-image-input" accept="image/png, image/jpeg">
                     
-                    <img id="image-preview" src="" alt="Xem trước ảnh" class="image-preview-box hidden">
+                    <img id="image-preview" src="" alt="Xem trước" class="image-preview-box hidden">
+                    <input type="hidden" id="current-image-path"> 
                 </div>
-                <div class="form-group-row">
-                    <div class="form-group">
-                        <label for="recipe-prep-time-input">Thời gian chuẩn bị (vd: 30 phút)</label>
-                        <input type="text" id="recipe-prep-time-input">
-                    </div>
-                    <div class="form-group">
-                        <label for="recipe-servings-input">Khẩu phần (vd: 4 người)</label>
-                        <input type="text" id="recipe-servings-input">
-                    </div>
-                    <div class="form-group">
-                    <label for="recipe-category-input">Chọn Danh mục</label>
-                    <select id="recipe-category-input" required>
-                        <option value="">-- Vui lòng chọn --</option>
-                        </select>
-                </div>
-                </div>
-                
+
                 <div class="form-group">
-                    <label for="recipe-ingredients-input">Nguyên liệu (Mỗi nguyên liệu 1 dòng)</label>
-                    <textarea id="recipe-ingredients-input" rows="5"></textarea>
+                    <label for="recipe-ingredients-input">Nguyên liệu (Mỗi dòng một nguyên liệu)</label>
+                    <textarea id="recipe-ingredients-input" rows="5" placeholder="- 500g thịt bò&#10;- 1kg bánh phở..."></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="recipe-instructions-input">Các bước thực hiện (Mỗi bước 1 dòng)</label>
-                    <textarea id="recipe-instructions-input" rows="7"></textarea>
+                    <label for="recipe-instructions-input">Các bước thực hiện</label>
+                    <textarea id="recipe-instructions-input" rows="7" placeholder="Bước 1: Rửa sạch thịt bò...&#10;Bước 2: Hầm xương..."></textarea>
                 </div>
                 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary">Lưu lại</button>
-                    <button type="button" id="cancel-btn" class="btn btn-secondary">Hủy</button>
+                    <button type="button" id="cancel-btn" class="btn btn-secondary">Hủy bỏ</button>
                 </div>
             </form>
         </div>
@@ -84,11 +318,11 @@
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Hình ảnh</th>
+                        <th style="width: 50px;">ID</th>
+                        <th style="width: 100px;">Hình ảnh</th>
                         <th>Tiêu đề</th>
-                        <th>Mô tả</th>
-                        <th>Hành động</th>
+                        <th style="width: 250px;">Mô tả</th>
+                        <th style="width: 150px;">Hành động</th>
                     </tr>
                 </thead>
                 <tbody id="recipe-table-body">
@@ -99,5 +333,6 @@
     </main>
 
     <script src="js/auth.js"></script>
-    <script src="js/admin-recipe.js"></script> </body>
+    <script src="js/admin-recipe.js"></script>
+</body>
 </html>

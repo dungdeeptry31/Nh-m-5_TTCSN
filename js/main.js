@@ -1,56 +1,56 @@
-// File: js/main.js (PHIÊN BẢN KẾT NỐI API THẬT)
+// File: js/main.js
+
+const API_BASE_URL = 'http://localhost:8080'; 
 
 document.addEventListener('DOMContentLoaded', function() {
     
     const recipeContainer = document.getElementById('recipe-list-container');
     const categoryContainer = document.getElementById('category-list-container');
 
-    // === (GIỮ LẠI) DỮ LIỆU GIẢ CHO DANH MỤC ===
-    // (Vì chúng ta chưa làm API "GET /api/categories")
-    const mockCategories = [
-        { name: "Món Chiên", image: "images/monchien.jpg" }, // Nhớ sửa lại tên ảnh cho đúng
-        { name: "Món Xào", image: "images/moxao.webp" },
-        { name: "Món Canh", image: "images/moncanh.jpg" },
-        { name: "Món Nướng", image: "images/monnuong.webp" },
-        { name: "Món Lẩu", image: "images/monlau.webp" },
-        { name: "Món Chay", image: "images/monchay.jpg" }
-    ];
-
-    // === (MỚI) HÀM GỌI API LẤY CÔNG THỨC THẬT ===
-    async function fetchRecipesFromBackend() {
-        if (!recipeContainer) return;
+    // --- 1. LẤY DANH MỤC TỪ SERVER ---
+    async function fetchCategories() {
+        if (!categoryContainer) return;
         
         try {
-            // Chỉ lấy 6 món ăn mới nhất (trang 0, kích thước 6)
-            const response = await fetch('http://localhost:8080/api/recipes?page=0&size=6');
-            if (!response.ok) throw new Error('Không thể tải công thức từ backend');
+            const response = await fetch(`${API_BASE_URL}/api/categories`);
+            if (!response.ok) throw new Error('Không thể tải danh mục');
             
-            const recipePage = await response.json(); // Lấy dữ liệu dạng Page
-            const realRecipes = recipePage.content; // Mảng công thức nằm trong .content
+            const categories = await response.json();
             
-            if (realRecipes.length === 0) {
-                 recipeContainer.innerHTML = "<p>Chưa có công thức nào. Vui lòng thêm ở trang Admin.</p>";
-                 return;
+            if (categories.length === 0) {
+                categoryContainer.innerHTML = "<p style='width:100%; text-align:center; color:#666;'>Chưa có danh mục nào.</p>";
+                return;
             }
-            displayRecipes(realRecipes); // Dùng dữ liệu thật để "vẽ"
+            displayCategories(categories);
             
         } catch (error) {
-            console.error("Lỗi khi tải công thức:", error);
-            recipeContainer.innerHTML = "<p>Lỗi kết nối đến server. Backend có đang chạy?</p>";
+            console.error("Lỗi tải danh mục:", error);
+            displayCategories([
+                { id: 0, name: "Món Mẫu", image: "https://via.placeholder.com/150" }
+            ]);
         }
     }
 
-    // === CÁC HÀM HIỂN THỊ ===
-
-    // (Giữ nguyên) Hàm hiển thị Danh mục
+    // --- 2. HIỂN THỊ DANH MỤC ---
     function displayCategories(categories) {
-        if (!categoryContainer) return;
         categoryContainer.innerHTML = '';
         
         categories.forEach(category => {
+            let catImg = 'https://via.placeholder.com/150?text=No+Img';
+            if (category.image) {
+                if (category.image.startsWith('http')) {
+                    catImg = category.image;
+                } else {
+                    catImg = `${API_BASE_URL}/uploads/${category.image}`;
+                }
+            }
+
             const categoryCardHTML = `
-                <div class="category-card" onclick="location.href='search.html?category=${category.name}'">
-                    <img src="${category.image}" alt="${category.name}">
+                <div class="category-card" onclick="location.href='search.html?categoryId=${category.id}'" style="cursor: pointer;">
+                    <img src="${catImg}" 
+                         alt="${category.name}"
+                         style="object-fit: cover; height: 150px; width: 100%;"
+                         onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=Error';">
                     <div class="category-title">${category.name}</div>
                 </div>
             `;
@@ -58,44 +58,126 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // (Giữ nguyên) Hàm này giờ sẽ nhận dữ liệu THẬT từ CSDL
+    // --- 3. LẤY CÔNG THỨC TỪ SERVER ---
+    async function fetchRecipesFromBackend() {
+        if (!recipeContainer) return;
+        
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/recipes?page=0&size=12`);
+            
+            if (!response.ok) throw new Error('Không thể tải công thức');
+            
+            const recipePage = await response.json(); 
+            const realRecipes = recipePage.content;
+            
+            if (realRecipes.length === 0) {
+                 recipeContainer.innerHTML = "<p style='text-align:center; width:100%; color:#666;'>Chưa có công thức nào.</p>";
+                 return;
+            }
+            displayRecipes(realRecipes);
+            
+        } catch (error) {
+            console.error("Lỗi:", error);
+            recipeContainer.innerHTML = "<p style='text-align:center; width:100%; color:red;'>Lỗi kết nối Server.</p>";
+        }
+    }
+
+    // --- 4. HIỂN THỊ MÓN ĂN ---
     function displayRecipes(recipes) {
         recipeContainer.innerHTML = '';
-        const userLoggedIn = isLoggedIn(); // Từ auth.js
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        const userLoggedIn = user && user.email;
 
         recipes.forEach(recipe => {
             const favoriteButtonHTML = userLoggedIn ? 
                 `<div class="favorite-icon" data-recipe-id="${recipe.id}">&hearts;</div>` : '';
             
-            // Dùng các trường từ CSDL (ví dụ: recipe.title, recipe.image)
+            let imageUrl = 'https://via.placeholder.com/300x200?text=No+Image';
+            
+            if (recipe.image) {
+                if (recipe.image.startsWith('http')) {
+                    imageUrl = recipe.image; 
+                } else {
+                    imageUrl = `${API_BASE_URL}/uploads/${recipe.image}`; 
+                }
+            }
+            
             const recipeCardHTML = `
                 <div class="recipe-card">
                     ${favoriteButtonHTML}
-                    <a href="recipe-detail.html?id=${recipe.id}">
-                        <img src="${recipe.image || 'https://via.placeholder.com/300x180'}" alt="${recipe.title}">
+                    <a href="recipe-detail.html?id=${recipe.id}" style="text-decoration:none; color:inherit;">
+                        <img src="${imageUrl}" 
+                             alt="${recipe.title}" 
+                             onerror="this.onerror=null; this.src='https://via.placeholder.com/300x200?text=Error';">
+                        
                         <h3>${recipe.title}</h3>
-                        <p>${recipe.description}</p>
+                        <p>${recipe.description ? recipe.description.substring(0, 60) + '...' : 'Món ngon...'}</p>
                     </a>
                 </div>
             `;
             recipeContainer.innerHTML += recipeCardHTML;
         });
 
-        if (userLoggedIn) { addFavoriteClickEvents(); }
+        if (userLoggedIn) { 
+            addFavoriteClickEvents(user.email); 
+        }
     }
 
-    // (Giữ nguyên) Hàm xử lý click Yêu thích
-    function addFavoriteClickEvents() {
+    // --- 5. XỬ LÝ CLICK TIM ---
+    function addFavoriteClickEvents(email) {
         document.querySelectorAll('.favorite-icon').forEach(icon => {
-            icon.addEventListener('click', function(e) {
+            icon.addEventListener('click', async function(e) {
                 e.stopPropagation(); 
-                this.classList.toggle('favorited');
-                console.log("Clicked favorite on recipe ID: " + this.dataset.recipeId);
+                const recipeId = this.dataset.recipeId;
+                const isFavorited = this.classList.contains('favorited');
+                const action = isFavorited ? 'remove' : 'add'; 
+
+                try {
+                    const res = await fetch(`${API_BASE_URL}/api/favorites/${action}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: email, recipeId: parseInt(recipeId) })
+                    });
+
+                    if (res.ok) {
+                        this.classList.toggle('favorited'); 
+                        if (isFavorited) {
+                             this.style.color = '#ccc'; 
+                        } else {
+                             this.style.color = 'var(--primary-color)'; 
+                        }
+                    } else {
+                        alert("Lỗi thao tác!");
+                    }
+                } catch (err) { console.error(err); }
             });
         });
     }
 
-    // === GỌI HÀM KHI TẢI TRANG ===
-    displayCategories(mockCategories); // Vẫn dùng data giả
-    fetchRecipesFromBackend(); // (MỚI) Dùng API thật
+    // --- 6. XỬ LÝ THANH TÌM KIẾM (ĐÃ ĐƯA VÀO TRONG) ---
+    const searchInput = document.querySelector('.search-bar input');
+    const searchBtn = document.querySelector('.search-bar button');
+
+    if (searchInput && searchBtn) {
+        function handleSearch() {
+            const keyword = searchInput.value.trim();
+            if (keyword) {
+                window.location.href = `search.html?keyword=${encodeURIComponent(keyword)}`;
+            } else {
+                alert("Vui lòng nhập tên món ăn!");
+            }
+        }
+
+        searchBtn.addEventListener('click', handleSearch);
+
+        searchInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                handleSearch();
+            }
+        });
+    }
+
+    // === CHẠY ===
+    fetchCategories(); 
+    fetchRecipesFromBackend(); 
 });

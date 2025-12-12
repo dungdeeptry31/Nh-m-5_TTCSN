@@ -4,45 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý Danh mục</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* CSS nội bộ để đảm bảo giao diện đẹp */
+        :root { --primary-color: #e67e22; --secondary-color: #34495e; --bg-color: #f4f7f6; --card-bg: #ffffff; }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--bg-color); margin: 0; }
+        .admin-container { max-width: 1000px; margin: 40px auto; padding: 30px; background: #fff; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #f4f7f6; padding-bottom: 10px; }
+        
+        .btn { padding: 10px 20px; border-radius: 6px; cursor: pointer; border: none; font-weight: bold; color: white; margin-right: 5px; }
+        .btn-primary { background-color: #e67e22; }
+        .btn-secondary { background-color: #95a5a6; }
+        .btn-delete { background-color: #e74c3c; padding: 6px 12px; font-size: 13px; }
+        .btn-edit { background-color: #3498db; padding: 6px 12px; font-size: 13px; }
+
+        /* Form Container */
+        .admin-form-container { background: #fcfcfc; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; display: none; }
+        .admin-form-container.show { display: block; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        
+        /* Table */
+        .admin-table { width: 100%; border-collapse: collapse; }
+        .admin-table th { text-align: left; padding: 15px; background: #f8f9fa; }
+        .admin-table td { padding: 15px; border-bottom: 1px solid #eee; vertical-align: middle; }
+        .admin-table img { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid #eee; }
+        
+        /* Preview */
+        .preview-box { width: 100px; height: 100px; object-fit: cover; margin-top: 10px; border-radius: 6px; display: none; }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar">
-            <div class="logo">
-                <a href="index.html">LogoBếp</a>
-            </div>
+        <div class="navbar">
+            <div class="logo"><a href="index.html">LogoBếp</a></div>
             <div class="user-actions">
                 <a href="admin-dashboard.html">Chào, Admin</a>
                 <a href="#" id="logout-btn">Đăng xuất</a>
             </div>
-        </nav>
+        </div>
     </header>
 
     <main class="admin-container">
         <div class="admin-header">
-            <h1>Quản lý Danh mục (UC #14)</h1>
-            <button id="add-new-btn" class="btn btn-primary">Thêm danh mục</button>
+            <h1>Quản lý Danh mục</h1>
+            <button id="add-new-btn" class="btn btn-primary">+ Thêm danh mục</button>
         </div>
 
-        <div id="category-form-container" class="admin-form-container hidden">
-            <h2 id="form-title">Thêm danh mục mới</h2>
+        <div id="category-form-container" class="admin-form-container">
+            <h3 id="form-title" style="margin-top: 0; color: #e67e22;">Thêm danh mục mới</h3>
             <form id="category-form">
                 <input type="hidden" id="category-id">
                 
                 <div class="form-group">
-                    <label for="category-name-input">Tên danh mục</label>
-                    <input type="text" id="category-name-input" required>
-                </div>
-                <div class="form-group">
-                    <label for="category-image-input">Link hình ảnh</label>
-                    <input type="text" id="category-image-input">
+                    <label>Tên danh mục</label>
+                    <input type="text" id="category-name-input" required placeholder="Ví dụ: Món Nướng">
                 </div>
                 
-                <div class="form-actions">
+                <div class="form-group">
+                    <label>Hình ảnh</label>
+                    <input type="file" id="category-image-input" accept="image/*">
+                    <img id="image-preview" src="" class="preview-box">
+                    <input type="hidden" id="current-image-path">
+                </div>
+                
+                <div style="margin-top: 20px;">
                     <button type="submit" class="btn btn-primary">Lưu lại</button>
                     <button type="button" id="cancel-btn" class="btn btn-secondary">Hủy</button>
                 </div>
@@ -53,8 +82,8 @@
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Hình ảnh</th>
+                        <th style="width: 50px;">ID</th>
+                        <th style="width: 100px;">Hình ảnh</th>
                         <th>Tên danh mục</th>
                         <th>Hành động</th>
                     </tr>
@@ -63,9 +92,9 @@
                     </tbody>
             </table>
         </div>
-
     </main>
 
     <script src="js/auth.js"></script>
-    <script src="js/admin-category.js"></script> </body>
+    <script src="js/admin-category.js"></script>
+</body>
 </html>
