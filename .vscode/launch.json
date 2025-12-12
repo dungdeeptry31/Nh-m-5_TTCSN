@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-CookingwebApplication<cookingweb>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.projectttcsn.cookingweb.CookingwebApplication",
+            "projectName": "cookingweb",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
